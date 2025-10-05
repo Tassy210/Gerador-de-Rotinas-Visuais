@@ -1,0 +1,54 @@
+{% extends 'rotinas/base.html' %}
+{% load static %}
+
+{% block title %}Criar Atividade - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-full px-4 py-12 sm:px-6 lg:px-8">
+    <div class="w-full max-w-lg space-y-8">
+
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold tracking-tight text-slate-900">
+                Criar Nova Atividade
+            </h2>
+            <p class="mt-2 text-center text-sm text-slate-600">
+                Preencha os dados para adicionar um novo passo à rotina.
+            </p>
+        </div>
+
+        <form class="mt-8 space-y-6" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="space-y-4">
+                <div>
+                    <label for="{{ form.titulo.id_for_label }}" class="block text-sm font-medium text-slate-700">Título</label>
+                    {{ form.titulo }}
+                </div>
+                <div>
+                    <label for="{{ form.descricao.id_for_label }}" class="block text-sm font-medium text-slate-700">Descrição</label>
+                    {{ form.descricao }}
+                </div>
+                <div>
+                    <label for="{{ form.pictograma.id_for_label }}" class="block text-sm font-medium text-slate-700">Pictograma (Imagem)</label>
+                    {{ form.pictograma }}
+                </div>
+                <div>
+                    <label for="{{ form.ordem.id_for_label }}" class="block text-sm font-medium text-slate-700">Ordem</label>
+                    {{ form.ordem }}
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Salvar Atividade
+                </button>
+            </div>
+        </form>
+        <div class="text-center">
+            <a href="{% url 'home' %}" class="font-medium text-blue-600 hover:text-blue-500">
+                Cancelar e voltar
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

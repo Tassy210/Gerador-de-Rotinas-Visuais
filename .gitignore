@@ -1,0 +1,18 @@
+# Ambiente Virtual
+venv/
+
+# Dependências do Node.js
+node_modules/
+
+# Arquivos de Cache do Python
+__pycache__/
+*.pyc
+
+# Banco de Dados SQLite
+db.sqlite3
+
+# Arquivos de mídia (uploads de pictogramas)
+media/
+
+# Arquivos de log do NPM
+npm-debug.log*

@@ -1,0 +1,37 @@
+@startuml
+
+actor Usuário
+
+rectangle "Gerenciamento de Conta" {
+  usecase "Cadastrar-se no Sistema" as UC_Cadastro
+  usecase "Autenticar-se (Login)" as UC_Login
+  usecase "Sair do Sistema (Logout)" as UC_Logout
+}
+
+rectangle "Gerenciamento de Rotinas" {
+  usecase "Criar Rotina" as UC_CriarRotina
+  usecase "Visualizar Rotinas" as UC_VisualizarRotinas
+  usecase "Editar Rotina" as UC_EditarRotina
+  usecase "Excluir Rotina" as UC_ExcluirRotina
+}
+
+rectangle "Gerenciamento de Atividades" {
+  usecase "Adicionar Atividade" as UC_AddAtividade
+  usecase "Editar Atividade" as UC_EditarAtividade
+  usecase "Excluir Atividade" as UC_ExcluirAtividade
+}
+
+Usuário --> UC_Cadastro
+Usuário --> UC_Login
+Usuário --> UC_Logout
+
+Usuário --> UC_CriarRotina
+Usuário --> UC_VisualizarRotinas
+Usuário --> UC_EditarRotina
+Usuário --> UC_ExcluirRotina
+
+Usuário --> UC_AddAtividade
+Usuário --> UC_EditarAtividade
+Usuário --> UC_ExcluirAtividade
+
+@enduml

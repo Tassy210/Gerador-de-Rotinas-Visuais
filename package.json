@@ -1,0 +1,21 @@
+{
+  "name": "gerador_rotinas",
+  "version": "1.0.0",
+  "description": "Projeto de TCC para geração de rotinas visuais",
+  "main": "index.js",
+"scripts": {
+  "tailwind": ".\\node_modules\\.bin\\tailwindcss.cmd -i ./rotinas/static/css/input.css -o ./rotinas/static/css/output.css --watch",
+  "django": "python gerador_rotinas/manage.py runserver",
+  "dev": "concurrently \"npm:tailwind\" \"npm:django\""
+},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^9.2.1",
+    "flowbite": "^2.4.1",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.13"
+  }
+}

@@ -1,0 +1,3 @@
+start o projeto:
+
+.\venv\Scripts\activate
