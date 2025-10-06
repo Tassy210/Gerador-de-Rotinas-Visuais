@@ -28,11 +28,10 @@ Siga os passos abaixo para configurar e rodar o ambiente de desenvolvimento.
    ```bash
    git clone [https://github.com/seu-nome-de-usuario/tcc-gerador-rotinas-visuais.git](https://github.com/seu-nome-de-usuario/tcc-gerador-rotinas-visuais.git)
    cd tcc-gerador-rotinas-visuais
-
+   
 2. Ative o ambiente virtual:
   ```bash
-   python -m venv venv.\venv\Scripts\activate
-
+   python -m venv venv.\venv\Scripts\activate "
    
 3. Instale as dependências Python:
   ```bash
