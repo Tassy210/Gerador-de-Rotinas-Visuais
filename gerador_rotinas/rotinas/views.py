@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm 
-from django.contrib.auth import login 
+from django.contrib.auth import login, logout
 from .models import Atividade
-from usuarios.forms import CustomUserCreationForm
+from usuarios.forms import CustomUserCreationForm, UserProfileForm
 
 @login_required
 def home(request):
@@ -38,4 +38,28 @@ def criar_atividade(request):
         form = CustomUserCreationForm()
     
     return render(request, 'rotinas/criar_atividade.html', {'form': form})
+
+def criar_rotina(request):
+
+    return render(request, 'rotinas/criar_rotina.html')
+
+@login_required
+def editar_perfil(request):
+    if request.method == 'POST':
+        # Passamos 'instance=request.user' para dizer ao form qual usuário estamos editando
+        form = UserProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            # Adiciona uma mensagem de sucesso
+            messages.success(request, 'Seu perfil foi atualizado com sucesso!')
+            return redirect('home') # Ou para a mesma página: redirect('editar_perfil')
+    else:
+        # Ao carregar a página pela primeira vez, o form já vem preenchido com os dados do usuário
+        form = UserProfileForm(instance=request.user)
+
+    return render(request, 'rotinas/editar_perfil.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
