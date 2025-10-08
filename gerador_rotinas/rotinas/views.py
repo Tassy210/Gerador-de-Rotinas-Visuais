@@ -2,14 +2,15 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm 
 from django.contrib.auth import login, logout
-from .models import Atividade
+from .models import Rotina
+from .forms import RotinaForm
 from usuarios.forms import CustomUserCreationForm, UserProfileForm
 
 @login_required
 def home(request):
-    atividades = Atividade.objects.filter(usuario=request.user).order_by('ordem')
-    context = { 'atividades': atividades }
-    return render(request, 'rotinas/home.html', context)
+    lista_de_rotinas = Rotina.objects.filter(usuario=request.user).order_by('ordem')
+    contexto = {'rotinas': lista_de_rotinas}
+    return render(request, 'rotinas/home.html', contexto)
 
 def cadastro(request):
     if request.method == 'POST':
@@ -23,25 +24,32 @@ def cadastro(request):
 
     return render(request, 'rotinas/cadastro.html', {'form': form})
 
-@login_required
-def criar_atividade(request):
+@login_required # Garante que apenas usuários logados possam criar rotinas
+def criar_rotina(request):
     """
-    Esta view controla a criação de uma nova atividade.
+    Esta view controla a criação de uma nova rotina.
     """
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST) 
+        # Cria uma instância do formulário com os dados enviados (POST) e arquivos (FILES)
+        form = RotinaForm(request.POST, request.FILES)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
+            # Não salva no banco de dados ainda, apenas cria o objeto em memória
+            nova_rotina = form.save(commit=False)
+            
+            # Associa a rotina ao usuário que está logado
+            nova_rotina.usuario = request.user 
+            
+            # Agora sim, salva a rotina completa no banco de dados
+            nova_rotina.save()
+            
+            # Redireciona para a página inicial (ou para uma página de "sucesso")
             return redirect('home')
     else:
-        form = CustomUserCreationForm()
+        # Se não for um POST, apenas cria um formulário em branco
+        form = RotinaForm()
     
-    return render(request, 'rotinas/criar_atividade.html', {'form': form})
-
-def criar_rotina(request):
-
-    return render(request, 'rotinas/criar_rotina.html')
+    # Renderiza o template, passando o formulário como contexto
+    return render(request, 'rotinas/criar_rotina.html', {'form': form})
 
 @login_required
 def editar_perfil(request):

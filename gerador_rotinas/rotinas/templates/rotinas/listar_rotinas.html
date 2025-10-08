@@ -1,0 +1,58 @@
+{% extends 'rotinas/base.html' %}
+{% load static %}
+
+{% block title %}Minhas Rotinas{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto w-full px-6 py-12">
+
+    {% if rotinas %}
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
+            <div>
+                <h1 class="text-4xl font-extrabold text-slate-800 tracking-tight">Minhas Rotinas</h1>
+                <p class="mt-2 text-lg text-slate-600">Visualize, edite ou crie novas rotinas para organizar o seu dia.</p>
+            </div>
+            <a href="{% url 'rotinas:criar_rotina' %}" class="mt-4 md:mt-0 inline-block px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                Criar Nova Rotina
+            </a>
+        </header>
+    {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        {% for rotina in rotinas %}
+        <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
+            
+            <div class="p-6 flex-grow">
+                {% if rotina.pictograma %}
+                    <img src="{{ rotina.pictograma.url }}" alt="Pictograma de {{ rotina.titulo }}" class="w-full h-40 object-cover rounded-lg mb-4">
+                {% else %}
+                    <div class="w-full h-40 bg-slate-200 rounded-lg mb-4 flex items-center justify-center">
+                        <span class="text-slate-500">Sem Imagem</span>
+                    </div>
+                {% endif %}
+                <h2 class="text-2xl font-bold text-slate-900">{{ rotina.titulo }}</h2>
+                <p class="mt-2 text-slate-600">{{ rotina.descricao|default:"Sem descrição."|truncatewords:15 }}</p>
+            </div>
+            
+            <div class="p-6 bg-slate-50 rounded-b-2xl border-t border-slate-100 flex items-center justify-end space-x-3">
+                <a href="{% url 'rotinas:editar_rotina' pk=rotina.pk %}" class="font-medium text-slate-600 hover:text-slate-900">Editar</a>
+                <a href="{% url 'rotinas:excluir_rotina' pk=rotina.pk %}" class="px-5 py-2.5 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-700">
+                    Excluir
+                </a>
+            </div>
+        </div>
+
+        {% empty %}
+        <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center bg-white rounded-2xl shadow-lg p-16 border-2 border-dashed border-slate-200">
+            <h2 class="text-2xl font-bold text-slate-700 mt-4">Nenhuma rotina encontrada</h2>
+            <p class="text-slate-500 mt-2">Parece que você ainda não criou nenhuma rotina. Que tal começar agora?</p>
+            <a href="{% url 'rotinas:criar_rotina' %}" class="mt-6 inline-block px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700">
+                Criar minha primeira rotina
+            </a>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock %}

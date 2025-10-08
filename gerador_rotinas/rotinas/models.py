@@ -9,13 +9,20 @@ class Categoria(models.Model):
         return self.nome
     
 class Rotina(models.Model):
-    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True)
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE) 
+    
     titulo = models.CharField(max_length=100)
     descricao = models.TextField(blank=True, null=True)
+    pictograma = models.ImageField(upload_to='pictogramas/', blank=True, null=True) # Ou FileField
+    ordem = models.PositiveIntegerField()
 
     def __str__(self):
         return self.titulo
+
+    class Meta:
+        
+        ordering = ['ordem']
 
 class Atividade(models.Model):
     rotina = models.ForeignKey(Rotina, on_delete=models.CASCADE, related_name='atividades')
