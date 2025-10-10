@@ -6,6 +6,10 @@
 {% block content %}
 <div class="max-w-6xl mx-auto w-full px-6 py-12">
 
+    {# =================================================================== #}
+    {# 1. CABEÇALHO DA PÁGINA                                             #}
+    {#    - Só aparece se o usuário já tiver alguma rotina cadastrada.    #}
+    {# =================================================================== #}
     {% if rotinas %}
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
             <div>
@@ -17,29 +21,30 @@
             </a>
         </header>
     {% endif %}
-
-    <a href="{% url 'editar_perfil' %}">Editar Perfil</a>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {# =================================================================== #}
+    {# 2. GRID DE ROTINAS                                                  #}
+    {#    - Inicia o loop para mostrar cada rotina em um card.            #}
+    {# =================================================================== #}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ">
         
         {% for rotina in rotinas %}
         <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
+           <div class="flex items-center justify-center"> 
+            {# -- Corpo do Card -- #}
             <div class="p-6">
                 <h2 class="text-2xl font-bold text-slate-900">{{ rotina.titulo }}</h2>
                 <p class="mt-2 text-slate-600 h-16">{{ rotina.descricao|truncatewords:15 }}</p>
             </div>
             
+            {# -- Seção de Atividades (mostra as 3 primeiras) -- #}
             <div class="px-6 mb-4">
                 <h3 class="text-sm font-semibold text-slate-500 mb-2">Atividades:</h3>
                 <div class="flex items-center space-x-2">
                     {% for atividade in rotina.atividades.all|slice:":3" %}
-                        {% if atividade.pictograma %}
-                            <img src="{{ atividade.pictograma.url }}" alt="{{ atividade.titulo }}" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow">
-                        {% else %}
-                            <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 text-xs border-2 border-white shadow">
-                                Sem Img
-                            </div>
-                        {% endif %}
+                        {# ... (lógica para mostrar imagem ou placeholder) ... #}
                     {% endfor %}
+                    
+                    {# ⚠️ PONTO DE ATENÇÃO: Link para criar nova atividade #}
                     {% if rotina.atividades.all.count > 3 %}
                     <a href="{% url 'criar_atividade' %}" class="... inline-block ...">
                         Criar Nova Atividade
@@ -47,18 +52,26 @@
                     {% endif %}
                 </div>
             </div>
+        </div>
 
+            {# -- Rodapé do Card com os botões de ação -- #}
             <div class="p-6 mt-auto bg-slate-50 rounded-b-2xl border-t border-slate-100 flex items-center justify-end space-x-3">
-                <a href="#" class="font-medium text-slate-600 hover:text-slate-900">Editar</a>
+                {# TODO: Atualizar este link para a URL de edição da rotina específica #}
+                <a href="{% url 'editar_rotina' rotina.id %}" class="font-medium text-slate-600 hover:text-slate-900">Editar</a>
+                
+                {# TODO: Atualizar este link para a URL de visualização da rotina específica #}
                 <a href="#" class="px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700">
                     Visualizar
                 </a>
             </div>
         </div>
 
+        {# =================================================================== #}
+        {# 3. ESTADO VAZIO                                                     #}
+        {#    - Mostrado se o `for` loop não encontrar nenhuma rotina.        #}
+        {# =================================================================== #}
         {% empty %}
         <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center bg-white rounded-2xl shadow-lg p-16 border-2 border-dashed border-slate-200">
-            
             <h2 class="text-2xl font-bold text-slate-700 mt-4">Nenhuma rotina encontrada</h2>
             <p class="text-slate-500 mt-2">Parece que você ainda não criou nenhuma rotina. Que tal começar agora?</p>
             <a href="{% url 'criar_rotina' %}" class="mt-6 inline-block px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700">

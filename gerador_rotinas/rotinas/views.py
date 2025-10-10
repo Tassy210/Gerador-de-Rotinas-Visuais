@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm 
 from django.contrib.auth import login, logout
@@ -50,6 +50,30 @@ def criar_rotina(request):
     
     # Renderiza o template, passando o formulário como contexto
     return render(request, 'rotinas/criar_rotina.html', {'form': form})
+
+@login_required
+def editar_rotina(request, rotina_id):
+    # 1. Busca a rotina específica ou retorna um erro 404 se não existir.
+    #    A parte `usuario=request.user` é uma checagem de segurança CRUCIAL.
+    rotina = get_object_or_404(Rotina, id=rotina_id, usuario=request.user)
+
+    if request.method == 'POST':
+        # 2. Se o formulário for enviado, preenche o form com os dados novos (POST)
+        #    e os arquivos (FILES), mantendo a `instance` original.
+        form = RotinaForm(request.POST, request.FILES, instance=rotina)
+        if form.is_valid():
+            form.save()
+            return redirect('home') # Redireciona para a home após salvar
+    else:
+        # 3. Se for o primeiro acesso (GET), apenas exibe o formulário
+        #    já preenchido com os dados da rotina existente.
+        form = RotinaForm(instance=rotina)
+    
+    contexto = {
+        'form': form,
+        'rotina': rotina
+    }
+    return render(request, 'rotinas/editar_rotina.html', contexto)
 
 @login_required
 def editar_perfil(request):

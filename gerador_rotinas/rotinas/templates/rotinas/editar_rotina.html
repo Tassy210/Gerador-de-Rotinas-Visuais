@@ -1,0 +1,67 @@
+{% extends 'rotinas/base.html' %}
+
+{% load static %}
+
+{% block title %}Editar Rotina - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-full px-4 py-12 sm:px-6 lg:px-8">
+    <div class="w-full max-w-md space-y-8">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold tracking-tight text-slate-900">
+                Editar Rotina
+            </h2>
+            <p class="mt-2 text-center text-sm text-slate-600">
+                Preencha os dados para adicionar uma nova rotina visual.
+            </p>
+        </div>
+
+        {# ❗️ Importante: adicione enctype para o upload de arquivos funcionar #}
+        <form class="mt-8 space-y-6" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="rounded-md shadow-sm -space-y-px">
+                
+                <div>
+                    <label for="{{ form.titulo.id_for_label }}" class="sr-only">Título</label>
+                    {{ form.titulo }}
+                    {% for error in form.titulo.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <label for="{{ form.descricao.id_for_label }}" class="sr-only">Descrição</label>
+                    {{ form.descricao }}
+                    {% for error in form.descricao.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.ordem.id_for_label }}" class="sr-only">Ordem</label>
+                    {{ form.ordem }}
+                    {% for error in form.ordem.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+            </div>
+
+            <div class="pt-4">
+                <label for="{{ form.pictograma.id_for_label }}" class="block text-sm font-medium text-slate-700">Pictograma (Imagem)</label>
+                {{ form.pictograma }}
+                {% for error in form.pictograma.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+            
+            <div>
+                <button type="submit" class="group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Salvar Rotina
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
