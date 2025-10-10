@@ -4,82 +4,69 @@
 {% block title %}Minhas Rotinas - {{ block.super }}{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto w-full px-6 py-12">
+<div class="max-w-4xl mx-auto w-full px-6 py-12">
 
     {# =================================================================== #}
-    {# 1. CABEÇALHO DA PÁGINA                                             #}
-    {#    - Só aparece se o usuário já tiver alguma rotina cadastrada.    #}
+    {# 1. CABEÇALHO DA PÁGINA                                              #}
     {# =================================================================== #}
     {% if rotinas %}
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
             <div>
                 <h1 class="text-4xl font-extrabold text-slate-800 tracking-tight">Minhas Rotinas</h1>
                 <p class="mt-2 text-lg text-slate-600">Visualize, edite ou crie novas rotinas para organizar o seu dia.</p>
             </div>
-            <a href="{% url 'criar_rotina' %}" class="mt-4 md:mt-0 inline-block px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
-                Criar Nova Rotina
+            <a href="{% url 'criar_rotina' %}" class="mt-4 md:mt-0 inline-flex items-center justify-center px-5 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                Criar Rotina
             </a>
         </header>
     {% endif %}
-    {# =================================================================== #}
-    {# 2. GRID DE ROTINAS                                                  #}
-    {#    - Inicia o loop para mostrar cada rotina em um card.            #}
-    {# =================================================================== #}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ">
-        
-        {% for rotina in rotinas %}
-        <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
-           <div class="flex items-center justify-center"> 
-            {# -- Corpo do Card -- #}
-            <div class="p-6">
-                <h2 class="text-2xl font-bold text-slate-900">{{ rotina.titulo }}</h2>
-                <p class="mt-2 text-slate-600 h-16">{{ rotina.descricao|truncatewords:15 }}</p>
-            </div>
-            
-            {# -- Seção de Atividades (mostra as 3 primeiras) -- #}
-            <div class="px-6 mb-4">
-                <h3 class="text-sm font-semibold text-slate-500 mb-2">Atividades:</h3>
-                <div class="flex items-center space-x-2">
-                    {% for atividade in rotina.atividades.all|slice:":3" %}
-                        {# ... (lógica para mostrar imagem ou placeholder) ... #}
-                    {% endfor %}
-                    
-                    {# ⚠️ PONTO DE ATENÇÃO: Link para criar nova atividade #}
-                    {% if rotina.atividades.all.count > 3 %}
-                    <a href="{% url 'criar_atividade' %}" class="... inline-block ...">
-                        Criar Nova Atividade
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
 
-            {# -- Rodapé do Card com os botões de ação -- #}
-            <div class="p-6 mt-auto bg-slate-50 rounded-b-2xl border-t border-slate-100 flex items-center justify-end space-x-3">
-                {# TODO: Atualizar este link para a URL de edição da rotina específica #}
-                <a href="{% url 'editar_rotina' rotina.id %}" class="font-medium text-slate-600 hover:text-slate-900">Editar</a>
+    {# =================================================================== #}
+    {# 2. LISTA DE ROTINAS                                                 #}
+    {# - Container principal para a lista, com sombra e divisórias.        #}
+    {# =================================================================== #}
+    <div class="bg-white rounded-lg shadow-md">
+        <ul class="divide-y divide-slate-200">
+            
+            {% for rotina in rotinas %}
+            {# -- Item da Lista -- #}
+            <li class="flex items-center justify-between p-4 sm:p-6 hover:bg-slate-50 transition-colors">
                 
-                {# TODO: Atualizar este link para a URL de visualização da rotina específica #}
-                <a href="#" class="px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700">
-                    Visualizar
+                {# -- Informações da Rotina (Título e Descrição) -- #}
+                <div class="flex-grow">
+                    <h2 class="text-lg font-bold text-slate-900">{{ rotina.titulo }}</h2>
+                    <p class="text-sm text-slate-600 mt-1">{{ rotina.descricao|truncatewords:20 }}</p>
+                </div>
+                
+                {# -- Botões de Ação -- #}
+                <div class="flex items-center space-x-3 sm:space-x-4 ml-4 flex-shrink-0">
+                    <a href="{% url 'editar_rotina' rotina.id %}" class="font-medium text-slate-600 hover:text-slate-900 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+                    </a>
+                    <a href="#" class="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                    </a>
+                </div>
+            </li>
+
+            {# =================================================================== #}
+            {# 3. ESTADO VAZIO                                                     #}
+            {# - Mostrado se o `for` loop não encontrar nenhuma rotina.        #}
+            {# =================================================================== #}
+            {% empty %}
+            <div class="text-center p-16 border-2 border-dashed border-slate-200 rounded-lg">
+                <h2 class="text-2xl font-bold text-slate-700 mt-4">Nenhuma rotina encontrada</h2>
+                <p class="text-slate-500 mt-2">Parece que você ainda não criou nenhuma rotina. Que tal começar agora?</p>
+                <a href="{% url 'criar_rotina' %}" class="mt-6 inline-block px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700">
+                    Criar minha primeira rotina
                 </a>
             </div>
-        </div>
-
-        {# =================================================================== #}
-        {# 3. ESTADO VAZIO                                                     #}
-        {#    - Mostrado se o `for` loop não encontrar nenhuma rotina.        #}
-        {# =================================================================== #}
-        {% empty %}
-        <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center bg-white rounded-2xl shadow-lg p-16 border-2 border-dashed border-slate-200">
-            <h2 class="text-2xl font-bold text-slate-700 mt-4">Nenhuma rotina encontrada</h2>
-            <p class="text-slate-500 mt-2">Parece que você ainda não criou nenhuma rotina. Que tal começar agora?</p>
-            <a href="{% url 'criar_rotina' %}" class="mt-6 inline-block px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700">
-                Criar minha primeira rotina
-            </a>
-        </div>
-        {% endfor %}
-
+            {% endfor %}
+            
+        </ul>
     </div>
 </div>
 {% endblock %}
