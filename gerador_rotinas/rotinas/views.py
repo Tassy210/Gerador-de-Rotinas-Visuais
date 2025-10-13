@@ -2,14 +2,25 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm 
 from django.contrib.auth import login, logout
-from .models import Rotina
+from .models import Rotina, Categoria
 from .forms import RotinaForm
 from usuarios.forms import CustomUserCreationForm, UserProfileForm
 
 @login_required
-def home(request):
-    lista_de_rotinas = Rotina.objects.filter(usuario=request.user).order_by('ordem')
-    contexto = {'rotinas': lista_de_rotinas}
+def home(request, categoria_id=None):
+    
+    categorias = Categoria.objects.all()
+
+    if categoria_id:
+        lista_de_rotinas = Rotina.objects.filter(usuario=request.user, categoria_id=categoria_id).order_by('ordem')
+    else:
+        lista_de_rotinas = Rotina.objects.filter(usuario=request.user).order_by('ordem')
+
+    contexto = {
+        'rotinas': lista_de_rotinas,
+        'categorias': categorias,
+        'categoria_selecionada_id': categoria_id,
+    }
     return render(request, 'rotinas/home.html', contexto)
 
 def cadastro(request):

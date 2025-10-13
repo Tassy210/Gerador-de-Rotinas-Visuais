@@ -14,6 +14,7 @@ urlpatterns = [
     path('rotina/<int:rotina_id>/editar/', views.editar_rotina, name='editar_rotina'),
     path('rotina/<int:pk>/deletar/', views.deletar_rotina, name='deletar_rotina'),
     path('rotina/<int:pk>/visualizar/', views.visualizar_rotina, name='visualizar_rotina'),
+    path('categoria/<int:categoria_id>/', views.home, name='home_filtrada'),
 
 
 ]
