@@ -5,7 +5,7 @@ from .models import Rotina
 class RotinaForm(forms.ModelForm):
     class Meta:
         model = Rotina
-        fields = ['titulo', 'descricao', 'pictograma', 'ordem']
+        fields = ['titulo', 'descricao', 'categoria','pictograma', 'ordem']
         
         widgets = {
             'titulo': forms.TextInput(attrs={
