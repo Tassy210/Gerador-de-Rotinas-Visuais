@@ -48,6 +48,14 @@
                     {% endfor %}
                 </div>
 
+                <div>
+                    <label for="{{ form.categoria.id_for_label}}" class="block text-sm font-bold text-slate-700 mb-1">Categoria</label>
+                    {{ form.categoria }}
+                    {% for error in form.categoria.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>   
+
                 <div class="pt-4">
                     <label class="block text-sm font-bold text-slate-700">Pictograma (Imagem)</label>
                     <div class="mt-2 flex justify-center rounded-lg border border-dashed border-slate-900/25 px-6 py-10">

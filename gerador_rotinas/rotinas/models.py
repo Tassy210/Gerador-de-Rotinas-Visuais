@@ -15,13 +15,12 @@ class Rotina(models.Model):
     pictograma = models.ImageField(upload_to='pictogramas/', blank=True, null=True)
     ordem = models.PositiveIntegerField(default=0)
     
-    # --- A GRANDE MUDANÇA ESTÁ AQUI ---
-    # Trocamos o CharField por uma ForeignKey
+
     categoria = models.ForeignKey(
         Categoria, 
-        on_delete=models.PROTECT, # Protege contra a exclusão de uma categoria em uso
+        on_delete=models.PROTECT, 
         null=True, 
-        blank=False # Torna o campo obrigatório no formulário
+        blank=False 
     )
 
     def __str__(self):

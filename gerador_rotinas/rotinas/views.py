@@ -24,49 +24,33 @@ def cadastro(request):
 
     return render(request, 'rotinas/cadastro.html', {'form': form})
 
-@login_required # Garante que apenas usuários logados possam criar rotinas
+@login_required 
 def criar_rotina(request):
-    """
-    Esta view controla a criação de uma nova rotina.
-    """
     if request.method == 'POST':
-        # Cria uma instância do formulário com os dados enviados (POST) e arquivos (FILES)
-        form = RotinaForm(request.POST, request.FILES)
+
+        form = RotinaForm(request.POST, request.FILES) 
         if form.is_valid():
-            # Não salva no banco de dados ainda, apenas cria o objeto em memória
             nova_rotina = form.save(commit=False)
-            
-            # Associa a rotina ao usuário que está logado
             nova_rotina.usuario = request.user 
-            
-            # Agora sim, salva a rotina completa no banco de dados
             nova_rotina.save()
-            
-            # Redireciona para a página inicial (ou para uma página de "sucesso")
             return redirect('home')
     else:
-        # Se não for um POST, apenas cria um formulário em branco
         form = RotinaForm()
     
-    # Renderiza o template, passando o formulário como contexto
     return render(request, 'rotinas/criar_rotina.html', {'form': form})
-
+    
 @login_required
 def editar_rotina(request, rotina_id):
-    # 1. Busca a rotina específica ou retorna um erro 404 se não existir.
-    #    A parte `usuario=request.user` é uma checagem de segurança CRUCIAL.
     rotina = get_object_or_404(Rotina, id=rotina_id, usuario=request.user)
 
     if request.method == 'POST':
-        # 2. Se o formulário for enviado, preenche o form com os dados novos (POST)
-        #    e os arquivos (FILES), mantendo a `instance` original.
+
         form = RotinaForm(request.POST, request.FILES, instance=rotina)
         if form.is_valid():
             form.save()
-            return redirect('home') # Redireciona para a home após salvar
+            return redirect('home') 
     else:
-        # 3. Se for o primeiro acesso (GET), apenas exibe o formulário
-        #    já preenchido com os dados da rotina existente.
+
         form = RotinaForm(instance=rotina)
     
     contexto = {
@@ -75,18 +59,27 @@ def editar_rotina(request, rotina_id):
     }
     return render(request, 'rotinas/editar_rotina.html', contexto)
 
+@login_required 
 def deletar_rotina(request, pk):
-    rotina = get_object_or_404(Rotina, pk=pk)
+    
+    rotina = get_object_or_404(Rotina, pk=pk, usuario=request.user) 
     
     if request.method == 'POST':
         rotina.delete()
-        
         return redirect('home')
 
+    context = { 'rotina': rotina }
+    return render(request, 'rotinas/deletar_rotina.html', context)
+
+@login_required 
+def visualizar_rotina(request, pk): 
+    
+    rotina = get_object_or_404(Rotina, pk=pk, usuario=request.user) 
     context = {
         'rotina': rotina
     }
-    return render(request, 'rotinas/deletar_rotina.html', context)
+   
+    return render(request, 'rotinas/visualizar_rotina.html', context)
 
 @login_required
 def editar_perfil(request):
@@ -97,9 +90,9 @@ def editar_perfil(request):
             form.save()
             
             messages.success(request, 'Seu perfil foi atualizado com sucesso!')
-            return redirect('home') # Ou para a mesma página: redirect('editar_perfil')
+            return redirect('home') 
     else:
-        # Ao carregar a página pela primeira vez, o form já vem preenchido com os dados do usuário
+
         form = UserProfileForm(instance=request.user)
 
     return render(request, 'rotinas/editar_perfil.html', {'form': form})
