@@ -75,14 +75,27 @@ def editar_rotina(request, rotina_id):
     }
     return render(request, 'rotinas/editar_rotina.html', contexto)
 
+def deletar_rotina(request, pk):
+    rotina = get_object_or_404(Rotina, pk=pk)
+    
+    if request.method == 'POST':
+        rotina.delete()
+        
+        return redirect('home')
+
+    context = {
+        'rotina': rotina
+    }
+    return render(request, 'rotinas/deletar_rotina.html', context)
+
 @login_required
 def editar_perfil(request):
     if request.method == 'POST':
-        # Passamos 'instance=request.user' para dizer ao form qual usuário estamos editando
+       
         form = UserProfileForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            # Adiciona uma mensagem de sucesso
+            
             messages.success(request, 'Seu perfil foi atualizado com sucesso!')
             return redirect('home') # Ou para a mesma página: redirect('editar_perfil')
     else:
