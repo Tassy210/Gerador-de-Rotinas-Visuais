@@ -1,3 +1,7 @@
 start o projeto:
 
+
 .\venv\Scripts\activate
+
+npm run dev 
+
