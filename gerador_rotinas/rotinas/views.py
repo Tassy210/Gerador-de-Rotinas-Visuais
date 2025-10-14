@@ -3,13 +3,24 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm 
 from django.contrib.auth import login, logout
 from .models import Rotina, Categoria
-from .forms import RotinaForm
+from .forms import RotinaForm, CategoriaForm
 from usuarios.forms import CustomUserCreationForm, UserProfileForm
 
 @login_required
 def home(request, categoria_id=None):
-    
-    categorias = Categoria.objects.all()
+
+    if request.method == 'POST':
+
+        categoria_form = CategoriaForm(request.POST)
+        if categoria_form.is_valid():
+            nova_categoria = categoria_form.save(commit=False)
+            nova_categoria.usuario = request.user 
+            nova_categoria.save()
+            return redirect('home')
+
+    categoria_form = CategoriaForm()   
+
+    categorias = Categoria.objects.filter(usuario=request.user).order_by('nome')
 
     if categoria_id:
         lista_de_rotinas = Rotina.objects.filter(usuario=request.user, categoria_id=categoria_id).order_by('ordem')
@@ -20,7 +31,9 @@ def home(request, categoria_id=None):
         'rotinas': lista_de_rotinas,
         'categorias': categorias,
         'categoria_selecionada_id': categoria_id,
+        'categoria_form': categoria_form
     }
+
     return render(request, 'rotinas/home.html', contexto)
 
 def cadastro(request):
@@ -107,6 +120,7 @@ def editar_perfil(request):
         form = UserProfileForm(instance=request.user)
 
     return render(request, 'rotinas/editar_perfil.html', {'form': form})
+
 
 def logout_view(request):
     logout(request)

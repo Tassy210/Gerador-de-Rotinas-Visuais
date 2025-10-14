@@ -4,6 +4,13 @@ from django.contrib.auth.models import User
 class Categoria(models.Model):
     nome = models.CharField(max_length=50, unique=True)
     pictograma_padrao = models.ImageField(upload_to='pictogramas_categoria/', help_text="Pictograma padrão para esta categoria.", blank=True, null=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        contraints: [models.UniqueConstraint(
+            fields=['Nome','Usuário'],  
+            name ='unique_categoria_por_usuario' 
+            )]
 
     def __str__(self):
         return self.nome

@@ -25,7 +25,6 @@
     <div class="border-b border-gray-200 mb-8">
         <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500">
             <li class="me-2">
-                
                 <a href="{% url 'home' %}" class="inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group {% if not categoria_selecionada_id %}text-blue-600 border-blue-600 active{% else %}border-transparent hover:text-gray-600 hover:border-gray-300{% endif %}">
                     Todas
                 </a>
@@ -37,61 +36,85 @@
                 </a>
             </li>
             {% endfor %}
+            <li class="me-2">
+                <button type="button" data-modal-target="create-category-modal" data-modal-toggle="create-category-modal" class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-blue-600 hover:border-blue-300 group" title="Criar Nova Categoria">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                    <span class="sr-only">Criar Nova Categoria</span>
+                </button>
+            </li>
         </ul>
     </div>
 
     <div class="bg-white rounded-lg shadow-md">
         <ul class="divide-y divide-slate-200">
-            
             {% for rotina in rotinas %}
             <li class="flex items-center justify-between p-4 sm:p-6 hover:bg-slate-50 transition-colors duration-200">
-                
-                <div class="flex items-center flex-grow">
-                    <div class="hidden sm:block mr-4">
-                        <span class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-blue-600">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-list"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
-                        </span>
-                    </div>
-
+                <div class="flex items-center flex-grow min-w-0">
                     <div class="flex-grow">
-                        <h2 class="text-lg font-bold text-slate-900">{{ rotina.titulo }}</h2>
-                        <p class="text-sm text-slate-600 mt-1">{{ rotina.descricao|truncatewords:20 }}</p>
+                        <h2 class="text-lg font-bold text-slate-900 truncate">{{ rotina.titulo }}</h2>
+                        <p class="text-sm text-slate-600 mt-1 truncate">{{ rotina.descricao|truncatewords:20 }}</p>
                     </div>
                 </div>
-                
                 <div class="flex items-center space-x-2 sm:space-x-3 ml-4 flex-shrink-0">
                     <a href="{% url 'deletar_rotina' rotina.pk %}" class="p-2 text-slate-500 hover:bg-red-100 hover:text-red-700 rounded-full transition-colors" title="Deletar Rotina">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
                     </a>
-                    <a href="{% url 'editar_rotina' rotina.id %}" class="p-2 text-slate-500 hover:bg-slate-200 hover:text-slate-800 rounded-full transition-colors" title="Editar Rotina">
+                    <a href="{% url 'editar_rotina' rotina.pk %}" class="p-2 text-slate-500 hover:bg-slate-200 hover:text-slate-800 rounded-full transition-colors" title="Editar Rotina">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
                     </a>
-                    <a href="{% url 'visualizar_rotina' rotina.id %}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors" title="Visualizar Rotina">
+                    <a href="{% url 'visualizar_rotina' rotina.pk %}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors" title="Visualizar Rotina">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye mr-2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                         Ver
                     </a>
                 </div>
             </li>
-
             {% empty %}
-            <div class="text-center p-12 sm:p-16 border-2 border-dashed border-slate-200 rounded-lg">
-                <div class="flex justify-center items-center">
-                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid2x2-check-icon lucide-grid-2x2-check"><path d="M12 3v17a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1H3"/><path d="m16 19 2 2 4-4"/></svg>
-                </div>
-
+            <div class="text-center p-12 sm:p-16">
                 <h2 class="text-2xl font-bold text-slate-700 mt-4">Nenhuma rotina encontrada</h2>
-                <p class="text-slate-500 mt-2">Parece que você ainda não criou nenhuma rotina. Que tal começar agora? ✨</p>
+                <p class="text-slate-500 mt-2">
+                    {% if categoria_selecionada_id %}
+                        Não há rotinas nesta categoria ainda.
+                    {% else %}
+                        Parece que você ainda não criou nenhuma rotina. Que tal começar agora? ✨
+                    {% endif %}
+                </p>
                 <a href="{% url 'criar_rotina' %}" class="mt-6 inline-flex items-center px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all">
-                    Criar minha primeira rotina
+                    Criar Rotina
                 </a>
             </div>
             {% endfor %}
-            
         </ul>
     </div>
 </div>
 
-        </li>
-    </ul>
+<div id="create-category-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                <h3 class="text-xl font-semibold text-gray-900">
+                    Criar Nova Categoria
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-hide="create-category-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/></svg>
+                    <span class="sr-only">Fechar modal</span>
+                </button>
+            </div>
+            <form method="POST" action="{% url 'home' %}" class="p-4 md:p-5">
+                {% csrf_token %}
+                <div>
+                    <label for="{{ categoria_form.nome.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900">Nome da Categoria</label>
+                    {{ categoria_form.nome }}
+                    
+                    {% for error in categoria_form.nome.errors %}
+                        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+                    {% endfor %}
+                    </div>
+                <button type="submit" class="w-full mt-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    Salvar Categoria
+                </button>
+            </form>
+        </div>
+    </div>
 </div>
+
 {% endblock %}
