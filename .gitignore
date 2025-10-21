@@ -16,3 +16,5 @@ media/
 
 # Arquivos de log do NPM
 npm-debug.log*
+
+.env

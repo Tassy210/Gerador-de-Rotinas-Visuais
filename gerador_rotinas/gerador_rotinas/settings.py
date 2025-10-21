@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
+from dotenv import load_dotenv
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -40,7 +42,17 @@ INSTALLED_APPS = [
     'rotinas',
     'usuarios',
     'django_extensions',
+    
 ]
+
+
+# Configuração REAL de envio de e-mail (Exemplo com GMAIL)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -131,4 +143,5 @@ LOGIN_REDIRECT_URL = '/'
 # O Django usa esta variável para saber para onde ir após o logout
 LOGOUT_REDIRECT_URL = '/login/'
 
-LOGIN_URL = 'login'
+LOGIN_URL = 'login' 
+
