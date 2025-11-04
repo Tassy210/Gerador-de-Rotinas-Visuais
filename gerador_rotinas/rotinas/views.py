@@ -2,15 +2,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm 
 from django.contrib.auth import login, logout
-from .models import Rotina, Categoria
-from .forms import RotinaForm, CategoriaForm
+from django.db.models import Max
+from django.contrib import messages
+from .models import Rotina, Categoria, Atividade
+from .forms import RotinaForm, CategoriaForm, AtividadeForm
 from usuarios.forms import CustomUserCreationForm, UserProfileForm
 
 @login_required
 def home(request, categoria_id=None):
-
     if request.method == 'POST':
-
         categoria_form = CategoriaForm(request.POST)
         if categoria_form.is_valid():
             nova_categoria = categoria_form.save(commit=False)
@@ -18,14 +18,13 @@ def home(request, categoria_id=None):
             nova_categoria.save()
             return redirect('home')
 
-    categoria_form = CategoriaForm()   
-
+    categoria_form = CategoriaForm() 
     categorias = Categoria.objects.filter(usuario=request.user).order_by('nome')
 
     if categoria_id:
-        lista_de_rotinas = Rotina.objects.filter(usuario=request.user, categoria_id=categoria_id).order_by('ordem')
+        lista_de_rotinas = Rotina.objects.filter(usuario=request.user, categoria_id=categoria_id).order_by('titulo')
     else:
-        lista_de_rotinas = Rotina.objects.filter(usuario=request.user).order_by('ordem')
+        lista_de_rotinas = Rotina.objects.filter(usuario=request.user).order_by('titulo')
 
     contexto = {
         'rotinas': lista_de_rotinas,
@@ -33,7 +32,6 @@ def home(request, categoria_id=None):
         'categoria_selecionada_id': categoria_id,
         'categoria_form': categoria_form
     }
-
     return render(request, 'rotinas/home.html', contexto)
 
 def cadastro(request):
@@ -84,9 +82,9 @@ def editar_rotina(request, rotina_id):
     return render(request, 'rotinas/editar_rotina.html', contexto)
 
 @login_required 
-def deletar_rotina(request, pk):
+def deletar_rotina(request, rotina_id):
     
-    rotina = get_object_or_404(Rotina, pk=pk, usuario=request.user) 
+    rotina = get_object_or_404(Rotina, id=rotina_id, usuario=request.user) 
     
     if request.method == 'POST':
         rotina.delete()
@@ -96,9 +94,9 @@ def deletar_rotina(request, pk):
     return render(request, 'rotinas/deletar_rotina.html', context)
 
 @login_required 
-def visualizar_rotina(request, pk): 
+def visualizar_rotina(request, rotina_id): 
     
-    rotina = get_object_or_404(Rotina, pk=pk, usuario=request.user) 
+    rotina = get_object_or_404(Rotina, id=rotina_id, usuario=request.user) 
     context = {
         'rotina': rotina
     }
@@ -126,3 +124,27 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
+def  criar_atividade(request, rotina_id):
+
+    rotina = get_object_or_404
+
+    if request.method == 'POST':
+
+        form = AtividadeForm(request.POST, request.FILES)
+        if form.is_valid():
+            atividade = form.save()
+            atividade.rotina = rotina 
+            atividade.usuario = request.user 
+
+            atividade.save()
+
+            return redirect('visualizar_rotina', rotina_id=rotina.id)
+    else: 
+        form = AtividadeForm()
+
+    contexto = {
+            'form': form,
+            'rotina': rotina 
+        }
+    
+    return render(request, 'rotinas/criar_atividade.html', contexto)

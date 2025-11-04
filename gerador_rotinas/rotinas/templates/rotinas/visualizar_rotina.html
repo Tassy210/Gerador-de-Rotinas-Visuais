@@ -22,7 +22,6 @@
             </div>
 
             <div class="p-6 sm:p-10 text-center">
-                
                 {% if rotina.categoria %}
                 <div class="mb-4">
                     <span class="inline-flex items-center gap-x-1.5 rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-700">
@@ -40,18 +39,56 @@
                     {{ rotina.descricao }}
                 </p>
                 {% endif %}
-
-                </div>
+            </div>
         </article>
+
+        <div class="mt-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight">Sequência de Passos</h2>
+                <a href="{% url 'criar_atividade' rotina.id %}" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                    <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                    Adicionar Passo
+                </a>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <ul class="divide-y divide-slate-200">
+                    {% for atividade in atividades %}
+                    <li class="flex items-center p-4 sm:p-6">
+                        <span class="text-3xl font-bold text-slate-400 w-12 flex-shrink-0">{{ atividade.ordem }}</span>
+                        
+                        <div class="mx-4 flex-shrink-0">
+                            {% if atividade.pictograma %}
+                                <img src="{{ atividade.pictograma.url }}" alt="{{ atividade.titulo }}" class="w-16 h-16 rounded-lg object-cover shadow-sm">
+                            {% else %}
+                                <div class="w-16 h-16 rounded-lg bg-slate-200 flex items-center justify-center">
+                                    <svg class="w-8 h-8 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="flex-grow">
+                            <h3 class="text-lg font-bold text-slate-900">{{ atividade.titulo }}</h3>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="text-center p-12">
+                        <h2 class="text-xl font-bold text-slate-700">Rotina Vazia</h2>
+                        <p class="text-slate-500 mt-2">Clique em "Adicionar Passo" para começar a montar sua sequência.</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
 
         <div class="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
             <a href="{% url 'home' %}" class="inline-flex w-full sm:w-auto justify-center items-center gap-2 rounded-lg border border-slate-300 bg-white py-3 px-6 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-                Voltar para Todas as Rotinas
+                Voltar
             </a>
             <a href="{% url 'editar_rotina' rotina.pk %}" class="inline-flex w-full sm:w-auto justify-center items-center gap-2 rounded-lg border border-transparent bg-blue-600 py-3 px-6 text-sm font-bold text-white shadow-sm hover:bg-blue-700 transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
-                Editar
+                Editar Rotina
             </a>
         </div>
 
