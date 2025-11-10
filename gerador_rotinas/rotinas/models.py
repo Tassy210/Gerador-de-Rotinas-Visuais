@@ -2,21 +2,24 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Categoria(models.Model):
-    nome = models.CharField(max_length=50, unique=True)
-    pictograma_padrao = models.ImageField(upload_to='pictogramas_categoria/', help_text="Pictograma padrão para esta categoria.", blank=True, null=True)
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    class Meta: 
-            constraints = [
-                models.UniqueConstraint(
+    nome = models.CharField(max_length=50) 
+    pictograma_padrao = models.ImageField(upload_to='pictogramas_categoria/', blank=True, null=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
-                    fields=['nome', 'usuario'], 
-                    name='unique_categoria_por_usuario'
-                )
-            ]
+    class Meta:
+        ordering = ['nome']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['nome', 'usuario'],
+                name='unique_categoria_por_usuario'
+            )
+        ]
 
     def __str__(self):
-        return self.nome
+        if self.usuario:
+            return f"{self.nome} ({self.usuario.username})"
+        return f"{self.nome} (Global)"
 
 class Rotina(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE) 
