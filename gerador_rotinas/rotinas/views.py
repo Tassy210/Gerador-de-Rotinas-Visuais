@@ -11,6 +11,9 @@ from usuarios.forms import CustomUserCreationForm, UserProfileForm
 
 @login_required
 def home(request, categoria_id=None):
+    if not Categoria.objects.filter(usuario=request.user).exists() and not request.session.get('setup_concluido', False):
+        return redirect('setup_inicial')
+
     if request.method == 'POST':
         categoria_form = CategoriaForm(request.POST)
         if categoria_form.is_valid():
@@ -20,15 +23,14 @@ def home(request, categoria_id=None):
             return redirect('home')
 
     categoria_form = CategoriaForm() 
+    
     categorias = Categoria.objects.filter(
         Q(usuario=request.user) | Q(usuario__isnull=True)
     ).order_by('nome')
 
     if categoria_id:
-        
         lista_de_rotinas = Rotina.objects.filter(usuario=request.user, categoria_id=categoria_id).order_by('titulo')
     else:
-        
         lista_de_rotinas = Rotina.objects.filter(usuario=request.user).order_by('titulo')
 
     contexto = {
@@ -88,42 +90,41 @@ def deletar_rotina(request, rotina_id):
     context = { 'rotina': rotina }
     return render(request, 'rotinas/deletar_rotina.html', context)
 
-# --- Views de Atividade (Passos da Rotina) ---
 
 @login_required 
 def visualizar_rotina(request, rotina_id): 
     rotina = get_object_or_404(Rotina, id=rotina_id, usuario=request.user) 
     
-    # CORREÇÃO: Precisamos buscar os "passos" (Atividades) desta rotina
+
     atividades_da_rotina = Atividade.objects.filter(rotina=rotina).order_by('ordem')
     
     context = {
         'rotina': rotina,
-        'atividades': atividades_da_rotina # <-- Enviando os passos para o template
+        'atividades': atividades_da_rotina
     }
     return render(request, 'rotinas/visualizar_rotina.html', context)
 
 @login_required
 def criar_atividade(request, rotina_id):
-    # CORREÇÃO: Chamada correta da função get_object_or_404
+    
     rotina = get_object_or_404(Rotina, id=rotina_id, usuario=request.user)
 
     if request.method == 'POST':
         form = AtividadeForm(request.POST, request.FILES)
         if form.is_valid():
-            # CORREÇÃO: Usando commit=False para adicionar dados antes de salvar
+           
             atividade = form.save(commit=False) 
             atividade.rotina = rotina 
             atividade.usuario = request.user 
 
-            # CORREÇÃO: Lógica para calcular a próxima ordem
+
             max_ordem = Atividade.objects.filter(rotina=rotina).aggregate(Max('ordem'))['ordem__max']
             if max_ordem is not None:
                 atividade.ordem = max_ordem + 1
             else:
-                atividade.ordem = 1 # É a primeira atividade
+                atividade.ordem = 1 
             
-            atividade.save() # Agora salva no banco
+            atividade.save() 
 
             return redirect('visualizar_rotina', rotina_id=rotina.id)
     else: 
@@ -137,7 +138,7 @@ def criar_atividade(request, rotina_id):
 
 @login_required
 def editar_atividade(request, atividade_id):
-    # Garante que a atividade existe E pertence ao usuário logado
+
     atividade = get_object_or_404(Atividade, id=atividade_id, usuario=request.user)
     rotina_id_para_redirecionar = atividade.rotina.id
 
@@ -189,3 +190,37 @@ def editar_perfil(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+@login_required
+def setup_inicial(request):
+    # Se já tiver categorias, manda pra home
+    if Categoria.objects.filter(usuario=request.user).exists():
+         return redirect('home')
+
+    if request.method == 'POST':
+        resposta = request.POST.get('resposta')
+        if resposta == 'sim':
+             criar_categoria_padrao(request.user)
+             messages.success(request, 'Categorias padrão criadas com sucesso!')
+        else:
+             messages.info(request, 'Ok, você pode criar suas categorias manualmente.')
+
+        request.session['setup_concluido'] = True
+        return redirect('home')
+
+    return render(request, 'rotinas/setup_inicial.html')
+
+def criar_categoria_padrao(usuario):
+
+    nomes_padrao = [
+        'Higiene Pessoal',
+        'Alimentação',
+        'Escola/Estudos',
+        'Lazer',
+        'Tarefas Domésticas',
+        'Sono/Descanso'
+    ]
+
+    for nome in nomes_padrao:
+       
+        Categoria.objects.get_or_create(usuario=usuario, nome=nome)

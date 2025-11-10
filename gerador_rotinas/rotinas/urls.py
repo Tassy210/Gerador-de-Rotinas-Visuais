@@ -25,5 +25,6 @@ urlpatterns = [
     path('atividade/<int:atividade_id>/editar/', views.editar_atividade, name='editar_atividade'),
     path('atividade/<int:atividade_id>/excluir/', views.excluir_atividade, name='excluir_atividade'),
 
+    path('setup/', views.setup_inicial, name='setup_inicial'),
 
 ]
