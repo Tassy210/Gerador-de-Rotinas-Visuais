@@ -6,4 +6,5 @@ class RotinasConfig(AppConfig):
     name = 'rotinas'
 
     def ready(self):
-        import rotinas.signals
+       # import rotinas.signals
+        pass

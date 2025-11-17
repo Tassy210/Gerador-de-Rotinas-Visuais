@@ -3,11 +3,104 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm 
 from django.contrib.auth import login, logout
-from django.db.models import Max  
+from django.db.models import Max 
 from django.contrib import messages 
 from .models import Rotina, Categoria, Atividade 
 from .forms import RotinaForm, CategoriaForm, AtividadeForm
 from usuarios.forms import CustomUserCreationForm, UserProfileForm
+
+# --- MODELOS DE ROTINA PADRÃO ---
+
+MODELOS_DE_ROTINA = {
+    'rotina_banho': {
+        'titulo_rotina': 'Rotina de Banho (Modelo)',
+        'categoria_nome': 'Higiene Pessoal',
+        'descricao_rotina': 'Passos para tomar um banho completo.',
+        'path_rotina': 'pictogramas_padrao/banho.png',
+        'atividades': [
+            {'titulo': 'Tirar a roupa', 'ordem': 1, 'path': 'pictogramas_padrao/tirar_roupa.png'},
+            {'titulo': 'Ligar o chuveiro', 'ordem': 2, 'path': 'pictogramas_padrao/ligar_chuveiro.png'},
+            {'titulo': 'Lavar o cabelo', 'ordem': 3, 'path': 'pictogramas_padrao/lavar_cabelo.png'},
+            {'titulo': 'Lavar o corpo', 'ordem': 4, 'path': 'pictogramas_padrao/lavar_corpo.png'},
+            {'titulo': 'Desligar o chuveiro', 'ordem': 5, 'path': 'pictogramas_padrao/desligar_chuveiro.png'},
+            {'titulo': 'Secar-se com a toalha', 'ordem': 6, 'path': 'pictogramas_padrao/secar_toalha.png'},
+            {'titulo': 'Vestir roupa limpa', 'ordem': 7, 'path': 'pictogramas_padrao/vestir_roupa.png'}
+        ]
+    },
+    'rotina_almoco': {
+        'titulo_rotina': 'Rotina de Almoço (Modelo)',
+        'categoria_nome': 'Alimentação',
+        'descricao_rotina': 'Passos para a hora do almoço.',
+        'path_rotina': 'pictogramas_padrao/alimentacao.png',
+        'atividades': [
+            {'titulo': 'Lavar as mãos', 'ordem': 1, 'path': 'pictogramas_padrao/lavar_mao.png'},
+            {'titulo': 'Sentar à mesa', 'ordem': 2, 'path': 'pictogramas_padrao/sentar_a_mesa.png'},
+            {'titulo': 'Comer', 'ordem': 3, 'path': 'pictogramas_padrao/comer.png'},
+            {'titulo': 'Beber', 'ordem': 4, 'path': 'pictogramas_padrao/beber.png'},
+            {'titulo': 'Limpar a boca', 'ordem': 5, 'path': 'pictogramas_padrao/limpar_a_boca.png'},
+            {'titulo': 'Escovar os dentes', 'ordem': 6, 'path': 'pictogramas_padrao/escovar_os_dentes.png'}
+        ]
+    }
+}
+
+# --- FUNÇÃO HELPER (AUXILIAR) ---
+
+def criar_rotinas_padrao_completas(usuario):
+    """
+    Cria o conjunto completo de categorias e, se houver, 
+    as rotinas-modelo para um novo usuário.
+    """
+    
+    # 1. Cria as Categorias (simples, só com nome)
+    # Voltamos ao que era antes
+    nomes_padrao = [
+        'Higiene Pessoal',
+        'Alimentação',
+        'Escola/Estudos',
+        'Lazer',
+        'Tarefas Domésticas',
+        'Sono/Descanso'
+    ]
+    
+    categorias_criadas = {}
+    for nome_cat in nomes_padrao:
+        categoria_obj, criada = Categoria.objects.get_or_create(
+            usuario=usuario,
+            nome=nome_cat
+            # SEM PICTOGRAMA AQUI
+        )
+        categorias_criadas[nome_cat] = categoria_obj
+
+    # 2. Agora, itera sobre os MODELOS e cria as rotinas
+    for chave_modelo, dados_modelo in MODELOS_DE_ROTINA.items():
+        
+        categoria_mae = categorias_criadas.get(dados_modelo['categoria_nome'])
+        
+        if categoria_mae:
+            # --- CORREÇÃO AQUI ---
+            # Agora salvamos o pictograma_padrao na ROTINA
+            nova_rotina, criada_rotina = Rotina.objects.get_or_create(
+                usuario=usuario,
+                titulo=dados_modelo['titulo_rotina'],
+                categoria=categoria_mae,
+                defaults={
+                    'descricao': dados_modelo['descricao_rotina'],
+                    # Pega o caminho da imagem da rotina
+                    'pictograma_padrao': dados_modelo.get('path_rotina', None) 
+                }
+            )
+            
+            if criada_rotina:
+                # 3. Cria todas as Atividades (Passos) - Isso não muda
+                for passo in dados_modelo['atividades']:
+                    Atividade.objects.create(
+                        rotina=nova_rotina,
+                        usuario=usuario,
+                        titulo=passo['titulo'],
+                        ordem=passo['ordem'],
+                        pictograma_padrao=passo['path']
+                    )
+# --- VIEWS PRINCIPAIS ---
 
 @login_required
 def home(request, categoria_id=None):
@@ -75,6 +168,7 @@ def editar_rotina(request, rotina_id):
             return redirect('home') 
     else:
         form = RotinaForm(instance=rotina)
+    
     contexto = {
         'form': form,
         'rotina': rotina
@@ -87,6 +181,7 @@ def deletar_rotina(request, rotina_id):
     if request.method == 'POST':
         rotina.delete()
         return redirect('home')
+
     context = { 'rotina': rotina }
     return render(request, 'rotinas/deletar_rotina.html', context)
 
@@ -95,7 +190,6 @@ def deletar_rotina(request, rotina_id):
 def visualizar_rotina(request, rotina_id): 
     rotina = get_object_or_404(Rotina, id=rotina_id, usuario=request.user) 
     
-
     atividades_da_rotina = Atividade.objects.filter(rotina=rotina).order_by('ordem')
     
     context = {
@@ -112,11 +206,10 @@ def criar_atividade(request, rotina_id):
     if request.method == 'POST':
         form = AtividadeForm(request.POST, request.FILES)
         if form.is_valid():
-           
+            
             atividade = form.save(commit=False) 
             atividade.rotina = rotina 
             atividade.usuario = request.user 
-
 
             max_ordem = Atividade.objects.filter(rotina=rotina).aggregate(Max('ordem'))['ordem__max']
             if max_ordem is not None:
@@ -138,7 +231,6 @@ def criar_atividade(request, rotina_id):
 
 @login_required
 def editar_atividade(request, atividade_id):
-
     atividade = get_object_or_404(Atividade, id=atividade_id, usuario=request.user)
     rotina_id_para_redirecionar = atividade.rotina.id
 
@@ -164,7 +256,6 @@ def excluir_atividade(request, atividade_id):
     
     if request.method == 'POST':
         atividade.delete()
-        # FUTURA MELHORIA: Reordenar os itens restantes (opcional)
         return redirect('visualizar_rotina', rotina_id=rotina_id_para_redirecionar)
 
     context = {
@@ -173,7 +264,28 @@ def excluir_atividade(request, atividade_id):
     }
     return render(request, 'rotinas/excluir_atividade.html', context)
 
-# --- Views de Usuário ---
+# --- VIEWS DE ONBOARDING E USUÁRIO ---
+
+@login_required
+def setup_inicial(request):
+    # Se já tiver categorias, manda pra home
+    if Categoria.objects.filter(usuario=request.user).exists():
+         return redirect('home')
+
+    if request.method == 'POST':
+        resposta = request.POST.get('resposta')
+        if resposta == 'sim':
+            # --- CORREÇÃO AQUI ---
+            # Chamando a função correta que cria TUDO
+            criar_rotinas_padrao_completas(request.user) 
+            messages.success(request, 'Categorias e rotinas padrão criadas com sucesso!')
+        else:
+            messages.info(request, 'Ok, você pode criar suas categorias manualmente.')
+
+        request.session['setup_concluido'] = True
+        return redirect('home')
+
+    return render(request, 'rotinas/setup_inicial.html')
 
 @login_required
 def editar_perfil(request):
@@ -190,37 +302,3 @@ def editar_perfil(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
-
-@login_required
-def setup_inicial(request):
-    # Se já tiver categorias, manda pra home
-    if Categoria.objects.filter(usuario=request.user).exists():
-         return redirect('home')
-
-    if request.method == 'POST':
-        resposta = request.POST.get('resposta')
-        if resposta == 'sim':
-             criar_categoria_padrao(request.user)
-             messages.success(request, 'Categorias padrão criadas com sucesso!')
-        else:
-             messages.info(request, 'Ok, você pode criar suas categorias manualmente.')
-
-        request.session['setup_concluido'] = True
-        return redirect('home')
-
-    return render(request, 'rotinas/setup_inicial.html')
-
-def criar_categoria_padrao(usuario):
-
-    nomes_padrao = [
-        'Higiene Pessoal',
-        'Alimentação',
-        'Escola/Estudos',
-        'Lazer',
-        'Tarefas Domésticas',
-        'Sono/Descanso'
-    ]
-
-    for nome in nomes_padrao:
-       
-        Categoria.objects.get_or_create(usuario=usuario, nome=nome)
