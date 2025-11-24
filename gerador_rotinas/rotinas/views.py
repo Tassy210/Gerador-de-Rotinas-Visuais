@@ -12,26 +12,28 @@ from usuarios.forms import CustomUserCreationForm, UserProfileForm
 # --- MODELOS DE ROTINA PADRÃO ---
 
 MODELOS_DE_ROTINA = {
+
     'rotina_banho': {
         'titulo_rotina': 'Rotina de Banho (Modelo)',
         'categoria_nome': 'Higiene Pessoal',
         'descricao_rotina': 'Passos para tomar um banho completo.',
-        'path_rotina': 'pictogramas_padrao/banho.png',
+        'path_rotina': 'pictogramas_padrao/higiene/banho.png',
         'atividades': [
-            {'titulo': 'Tirar a roupa', 'ordem': 1, 'path': 'pictogramas_padrao/tirar_roupa.png'},
-            {'titulo': 'Ligar o chuveiro', 'ordem': 2, 'path': 'pictogramas_padrao/ligar_chuveiro.png'},
-            {'titulo': 'Lavar o cabelo', 'ordem': 3, 'path': 'pictogramas_padrao/lavar_cabelo.png'},
-            {'titulo': 'Lavar o corpo', 'ordem': 4, 'path': 'pictogramas_padrao/lavar_corpo.png'},
-            {'titulo': 'Desligar o chuveiro', 'ordem': 5, 'path': 'pictogramas_padrao/desligar_chuveiro.png'},
-            {'titulo': 'Secar-se com a toalha', 'ordem': 6, 'path': 'pictogramas_padrao/secar_toalha.png'},
-            {'titulo': 'Vestir roupa limpa', 'ordem': 7, 'path': 'pictogramas_padrao/vestir_roupa.png'}
+            {'titulo': 'Tirar a roupa', 'ordem': 1, 'path': 'pictogramas_padrao/vestuario/tirar_roupa.png'}, 
+            {'titulo': 'Ligar o chuveiro', 'ordem': 2, 'path': 'pictogramas_padrao/higiene/ligar_chuveiro.png'},
+            {'titulo': 'Lavar o cabelo', 'ordem': 3, 'path': 'pictogramas_padrao/higiene/lavar_cabelo.png'},
+            {'titulo': 'Lavar o corpo', 'ordem': 4, 'path': 'pictogramas_padrao/higiene/lavar_corpo.png'},
+            {'titulo': 'Desligar o chuveiro', 'ordem': 5, 'path': 'pictogramas_padrao/higiene/desligar_chuveiro.png'},
+            {'titulo': 'Secar-se com a toalha', 'ordem': 6, 'path': 'pictogramas_padrao/higiene/secar_toalha.png'},
+            {'titulo': 'Vestir roupa limpa', 'ordem': 7, 'path': 'pictogramas_padrao/vestuario/vestir_roupa.png'}
         ]
     },
+
     'rotina_almoco': {
         'titulo_rotina': 'Rotina de Almoço (Modelo)',
         'categoria_nome': 'Alimentação',
         'descricao_rotina': 'Passos para a hora do almoço.',
-        'path_rotina': 'pictogramas_padrao/alimentacao.png',
+        'path_rotina': 'pictogramas_padrao/alimentacao/alimentacao.png',
         'atividades': [
             {'titulo': 'Lavar as mãos', 'ordem': 1, 'path': 'pictogramas_padrao/lavar_mao.png'},
             {'titulo': 'Sentar à mesa', 'ordem': 2, 'path': 'pictogramas_padrao/sentar_a_mesa.png'},
@@ -40,7 +42,21 @@ MODELOS_DE_ROTINA = {
             {'titulo': 'Limpar a boca', 'ordem': 5, 'path': 'pictogramas_padrao/limpar_a_boca.png'},
             {'titulo': 'Escovar os dentes', 'ordem': 6, 'path': 'pictogramas_padrao/escovar_os_dentes.png'}
         ]
-    }
+    }, 
+
+    'rotina_sono': {
+        'titulo_rotina': 'Hora de Dormir (Modelo)',
+        'categoria_nome': 'Sono/Descanso',
+        'descricao_rotina': 'Preparação para uma boa noite de sono.',
+        'path_rotina': 'pictogramas_padrao/quarto/dormir.png',
+        'atividades': [
+            {'titulo': 'Tirar a roupa do dia', 'ordem': 1, 'path': 'pictogramas_padrao/vestuario/tirar_roupa.png'}, 
+            {'titulo': 'Vestir o pijama', 'ordem': 2, 'path': 'pictogramas_padrao/vestuario/vestir_roupa.png'}, 
+            {'titulo': 'Escovar os dentes', 'ordem': 3, 'path': 'pictogramas_padrao/higiene/escovar_os_dentes.png'}, 
+            {'titulo': 'Ir para a cama', 'ordem': 4, 'path': 'pictogramas_padrao/quarto/cama.png'},
+            {'titulo': 'Apagar a luz', 'ordem': 5, 'path': 'pictogramas_padrao/quarto/apagar_luz.png'}
+        ]
+    },
 }
 
 # --- FUNÇÃO HELPER (AUXILIAR) ---
