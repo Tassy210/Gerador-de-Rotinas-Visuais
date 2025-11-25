@@ -30,19 +30,19 @@ MODELOS_DE_ROTINA = {
     },
 
     'rotina_almoco': {
-        'titulo_rotina': 'Rotina de Almoço (Modelo)',
-        'categoria_nome': 'Alimentação',
-        'descricao_rotina': 'Passos para a hora do almoço.',
-        'path_rotina': 'pictogramas_padrao/alimentacao/alimentacao.png',
-        'atividades': [
-            {'titulo': 'Lavar as mãos', 'ordem': 1, 'path': 'pictogramas_padrao/lavar_mao.png'},
-            {'titulo': 'Sentar à mesa', 'ordem': 2, 'path': 'pictogramas_padrao/sentar_a_mesa.png'},
-            {'titulo': 'Comer', 'ordem': 3, 'path': 'pictogramas_padrao/comer.png'},
-            {'titulo': 'Beber', 'ordem': 4, 'path': 'pictogramas_padrao/beber.png'},
-            {'titulo': 'Limpar a boca', 'ordem': 5, 'path': 'pictogramas_padrao/limpar_a_boca.png'},
-            {'titulo': 'Escovar os dentes', 'ordem': 6, 'path': 'pictogramas_padrao/escovar_os_dentes.png'}
-        ]
-    }, 
+            'titulo_rotina': 'Rotina de Almoço (Modelo)',
+            'categoria_nome': 'Alimentação',
+            'descricao_rotina': 'Passos para a hora do almoço.',
+            'path_rotina': 'pictogramas_padrao/alimentacao/alimentacao.png', 
+            'atividades': [
+                {'titulo': 'Lavar as mãos', 'ordem': 1, 'path': 'pictogramas_padrao/higiene/lavar_mao.png'}, 
+                {'titulo': 'Sentar à mesa', 'ordem': 2, 'path': 'pictogramas_padrao/alimentacao/sentar_a_mesa.png'}, 
+                {'titulo': 'Comer', 'ordem': 3, 'path': 'pictogramas_padrao/alimentacao/comer.png'}, 
+                {'titulo': 'Beber', 'ordem': 4, 'path': 'pictogramas_padrao/alimentacao/beber.png'}, 
+                {'titulo': 'Limpar a boca', 'ordem': 5, 'path': 'pictogramas_padrao/higiene/limpar_a_boca.png'}, 
+                {'titulo': 'Escovar os dentes', 'ordem': 6, 'path': 'pictogramas_padrao/higiene/escovar_os_dentes.png'} 
+            ]
+        },
 
     'rotina_sono': {
         'titulo_rotina': 'Hora de Dormir (Modelo)',
@@ -51,7 +51,7 @@ MODELOS_DE_ROTINA = {
         'path_rotina': 'pictogramas_padrao/quarto/dormir.png',
         'atividades': [
             {'titulo': 'Tirar a roupa do dia', 'ordem': 1, 'path': 'pictogramas_padrao/vestuario/tirar_roupa.png'}, 
-            {'titulo': 'Vestir o pijama', 'ordem': 2, 'path': 'pictogramas_padrao/vestuario/vestir_roupa.png'}, 
+            {'titulo': 'Vestir o pijama', 'ordem': 2, 'path': 'pictogramas_padrao/vestuario/pijama.png'}, 
             {'titulo': 'Escovar os dentes', 'ordem': 3, 'path': 'pictogramas_padrao/higiene/escovar_os_dentes.png'}, 
             {'titulo': 'Ir para a cama', 'ordem': 4, 'path': 'pictogramas_padrao/quarto/cama.png'},
             {'titulo': 'Apagar a luz', 'ordem': 5, 'path': 'pictogramas_padrao/quarto/apagar_luz.png'}
@@ -67,8 +67,6 @@ def criar_rotinas_padrao_completas(usuario):
     as rotinas-modelo para um novo usuário.
     """
     
-    # 1. Cria as Categorias (simples, só com nome)
-    # Voltamos ao que era antes
     nomes_padrao = [
         'Higiene Pessoal',
         'Alimentação',
