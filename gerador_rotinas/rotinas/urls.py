@@ -27,4 +27,6 @@ urlpatterns = [
 
     path('setup/', views.setup_inicial, name='setup_inicial'),
 
+    path('atividades/reordenar/', views.reordenar_atividades, name='reordenar_atividades'),
+
 ]

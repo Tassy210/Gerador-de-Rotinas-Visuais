@@ -8,6 +8,8 @@ from django.contrib import messages
 from .models import Rotina, Categoria, Atividade 
 from .forms import RotinaForm, CategoriaForm, AtividadeForm
 from usuarios.forms import CustomUserCreationForm, UserProfileForm
+from django.views.decorators.http import require_POST
+from django.http import HttpResponse
 
 # --- MODELOS DE ROTINA PADRÃO ---
 
@@ -81,31 +83,29 @@ def criar_rotinas_padrao_completas(usuario):
         categoria_obj, criada = Categoria.objects.get_or_create(
             usuario=usuario,
             nome=nome_cat
-            # SEM PICTOGRAMA AQUI
+
         )
         categorias_criadas[nome_cat] = categoria_obj
 
-    # 2. Agora, itera sobre os MODELOS e cria as rotinas
     for chave_modelo, dados_modelo in MODELOS_DE_ROTINA.items():
         
         categoria_mae = categorias_criadas.get(dados_modelo['categoria_nome'])
         
         if categoria_mae:
-            # --- CORREÇÃO AQUI ---
-            # Agora salvamos o pictograma_padrao na ROTINA
+
             nova_rotina, criada_rotina = Rotina.objects.get_or_create(
                 usuario=usuario,
                 titulo=dados_modelo['titulo_rotina'],
                 categoria=categoria_mae,
                 defaults={
                     'descricao': dados_modelo['descricao_rotina'],
-                    # Pega o caminho da imagem da rotina
+
                     'pictograma_padrao': dados_modelo.get('path_rotina', None) 
                 }
             )
             
             if criada_rotina:
-                # 3. Cria todas as Atividades (Passos) - Isso não muda
+                
                 for passo in dados_modelo['atividades']:
                     Atividade.objects.create(
                         rotina=nova_rotina,
@@ -114,6 +114,7 @@ def criar_rotinas_padrao_completas(usuario):
                         ordem=passo['ordem'],
                         pictograma_padrao=passo['path']
                     )
+
 # --- VIEWS PRINCIPAIS ---
 
 @login_required
@@ -282,15 +283,13 @@ def excluir_atividade(request, atividade_id):
 
 @login_required
 def setup_inicial(request):
-    # Se já tiver categorias, manda pra home
+
     if Categoria.objects.filter(usuario=request.user).exists():
          return redirect('home')
 
     if request.method == 'POST':
         resposta = request.POST.get('resposta')
         if resposta == 'sim':
-            # --- CORREÇÃO AQUI ---
-            # Chamando a função correta que cria TUDO
             criar_rotinas_padrao_completas(request.user) 
             messages.success(request, 'Categorias e rotinas padrão criadas com sucesso!')
         else:
@@ -316,3 +315,16 @@ def editar_perfil(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+@require_POST
+def reordenar_atividades(request):
+
+    nova_ordem = request.POST.getlist('item')
+
+    if nova_ordem: 
+
+        for index, atividade_id in enumerate(nova_ordem): 
+
+            Atividade.objects.filter(id=atividade_id).update(ordem=index + 1)
+
+        return HttpResponse(status=204)
