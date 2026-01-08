@@ -8,7 +8,6 @@
     <div class="max-w-2xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         
         <article class="bg-white rounded-2xl shadow-xl overflow-hidden">
-            
             <div class="bg-slate-100 flex items-center justify-center p-4">
                 <img src="{{ rotina.pictograma_url }}" alt="Pictograma da rotina {{ rotina.titulo }}" class="w-full max-w-md h-64 object-contain rounded-lg">
             </div>
@@ -23,13 +22,9 @@
                 </div>
                 {% endif %}
 
-                <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
-                    {{ rotina.titulo }}
-                </h1>
+                <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">{{ rotina.titulo }}</h1>
                 {% if rotina.descricao %}
-                <p class="mt-4 text-lg text-slate-600 max-w-xl mx-auto">
-                    {{ rotina.descricao }}
-                </p>
+                <p class="mt-4 text-lg text-slate-600 max-w-xl mx-auto">{{ rotina.descricao }}</p>
                 {% endif %}
             </div>
         </article>
@@ -39,78 +34,79 @@
                 <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight">Sequência de Passos</h2>
                 <a href="{% url 'criar_atividade' rotina.id %}" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
                     <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-                    Adicionar Passo
+                    Adicionar Atividade
                 </a>
             </div>
 
-            <form class="bg-white rounded-lg shadow-md overflow-hidden" 
-                  id="lista-atividades" 
-                  hx-post="{% url 'reordenar_atividades' %}" 
-                  hx-trigger="end"
-                  hx-trigger="none">
-                
+            <form class="bg-white rounded-lg shadow-md overflow-hidden" id="lista-atividades" hx-post="{% url 'reordenar_atividades' %}" hx-trigger="end">
                 {% csrf_token %}
-                
-<ul class="divide-y divide-slate-200" id="sortable-items">
-    {% for atividade in atividades %}
-    <li class="flex items-center justify-between p-4 sm:p-6 hover:bg-slate-50 transition-colors group cursor-move relative">
-        
-        <input type="hidden" name="item" value="{{ atividade.id }}">
+                <ul class="divide-y divide-slate-200" id="sortable-items">
+                    {% for atividade in atividades %}
+                    <li class="flex items-center justify-between p-4 sm:p-6 hover:bg-slate-50 transition-colors group cursor-move relative">
+                        <input type="hidden" name="item" value="{{ atividade.id }}">
 
-        <div class="flex items-center flex-grow"> 
-            <div class="mr-4 text-slate-300">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grip-vertical"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
-            </div>
+                        <div class="flex items-center flex-grow"> 
+                            <div class="mr-4 text-slate-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grip-vertical"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                            </div>
 
-            <span class="text-3xl font-bold text-slate-400 w-10 flex-shrink-0 text-center ordem-visual">{{ atividade.ordem }}</span>
-            
-            <div class="mx-4 flex-shrink-0">
-                <img src="{{ atividade.pictograma_url }}" 
-                     alt="{{ atividade.titulo }}" 
-                     class="w-16 h-16 rounded-lg object-cover shadow-sm border border-slate-200 bg-white cursor-pointer hover:scale-110 transition-transform"
-                     data-modal-target="modal-{{ atividade.id }}" 
-                     data-modal-toggle="modal-{{ atividade.id }}">
-            </div>
-                
-            <div class="mr-4">
-                <h3 class="text-lg font-bold text-slate-900">{{ atividade.titulo }}</h3>
-                {% if atividade.descricao %}
-                    <p class="text-sm text-slate-500 line-clamp-1">{{ atividade.descricao }}</p>
-                {% endif %}
-            </div>
-        </div>
+                            <span class="text-3xl font-bold text-slate-400 w-10 flex-shrink-0 text-center ordem-visual">{{ atividade.ordem }}</span>
+                            
+                            <div class="mx-4 flex-shrink-0">
+                                <img src="{{ atividade.pictograma_url }}" alt="{{ atividade.titulo }}" class="w-16 h-16 rounded-lg object-cover shadow-sm border border-slate-200 bg-white cursor-pointer hover:scale-110 transition-transform" data-modal-target="modal-{{ atividade.id }}" data-modal-toggle="modal-{{ atividade.id }}">
+                            </div>
+                                
+                            <div class="mr-4">
+                                <h3 class="text-lg font-bold text-slate-900">{{ atividade.titulo }}</h3>
+                                {% if atividade.descricao %}
+                                    <p class="text-sm text-slate-500 line-clamp-1">{{ atividade.descricao }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
 
-        <div class="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity md:opacity-100 pointer-events-auto z-10">
-            <a href="{% url 'editar_atividade' atividade.id %}" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors" title="Editar passo">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
-            </a>
-            <a href="{% url 'excluir_atividade' atividade.id %}" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors" title="Excluir passo">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-            </a>
-        </div>
+                        <div class="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity md:opacity-100">
+                            <a href="{% url 'editar_atividade' atividade.id %}" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                            </a>
+                            <a href="{% url 'excluir_atividade' atividade.id %}" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                            </a>
+                        </div>
 
-        <div id="modal-{{ atividade.id }}" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-[100] hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-            <div class="relative w-full max-w-md max-h-full">
-                <div class="relative bg-white rounded-2xl shadow-2xl border-4 border-blue-500">
-                    <div class="flex items-center justify-between p-4 border-b">
-                        <h3 class="text-2xl font-black text-slate-900 uppercase tracking-wide">{{ atividade.titulo }}</h3>
-                        <button type="button" class="text-slate-400 bg-transparent hover:bg-slate-100 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center" data-modal-hide="modal-{{ atividade.id }}">
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="p-6 flex flex-col items-center">
-                        <img src="{{ atividade.pictograma_url }}" class="w-full h-auto max-h-96 object-contain rounded-lg">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </li>
-    {% empty %}
-    <li class="text-center p-12 bg-slate-50">...</li>
-    {% endfor %}
-</ul>
+                        <div id="modal-{{ atividade.id }}" tabindex="-1" aria-hidden="true" class="modal-passo fixed top-0 left-0 right-0 z-[100] hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full" data-indice="{{ forloop.counter0 }}">
+                            <div class="relative w-full max-w-2xl max-h-full">
+                                <div class="relative bg-white rounded-2xl shadow-2xl border-4 border-blue-500">
+                                    <div class="flex items-center justify-between p-4 border-b">
+                                        <h3 class="text-2xl font-black text-slate-900 uppercase tracking-wide">{{ atividade.titulo }}</h3>
+                                        <button type="button" class="text-slate-400 bg-transparent hover:bg-slate-100 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center" data-modal-hide="modal-{{ atividade.id }}">
+                                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="p-6 flex items-center justify-between gap-4">
+                                        <button type="button" onclick="navegarPeloBotao(-1)" class="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
+                                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
+                                        </button>
+
+                                        <div class="flex flex-col items-center flex-grow">
+                                            <img src="{{ atividade.pictograma_url }}" class="w-full h-auto max-h-96 object-contain rounded-lg">
+                                            <span class="mt-4 px-4 py-1 bg-slate-100 text-slate-600 font-bold rounded-full">Passo {{ forloop.counter }} de {{ atividades|length }}</span>
+                                        </div>
+
+                                        <button type="button" onclick="navegarPeloBotao(1)" class="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
+                                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="text-center p-12 bg-slate-50">Nenhuma atividade cadastrada.</li>
+                    {% endfor %}
+                </ul>
             </form>
         </div>
 
@@ -124,22 +120,52 @@
                 Editar Rotina
             </a>
         </div>
-
     </div>
 </div>
 
 <script>
+
+    function navegarPeloBotao(direcao) {
+        const modalAtivo = document.querySelector('.modal-passo:not(.hidden)');
+        if (!modalAtivo) return;
+
+        const indiceAtual = parseInt(modalAtivo.getAttribute('data-indice'));
+        const totalModais = document.querySelectorAll('.modal-passo').length;
+        const proximoIndice = (indiceAtual + direcao + totalModais) % totalModais;
+        
+        trocarModal(modalAtivo, proximoIndice);
+    }
+
+    document.addEventListener('keydown', function(event) {
+        const modalAtivo = document.querySelector('.modal-passo:not(.hidden)');
+        if (!modalAtivo) return;
+
+        if (event.key === "ArrowRight") navegarPeloBotao(1);
+        if (event.key === "ArrowLeft") navegarPeloBotao(-1);
+    });
+
+    function trocarModal(modalAtual, novoIndice) {
+        const idAtual = modalAtual.getAttribute('id');
+        const instanceAtual = FlowbiteInstances.getInstance('Modal', idAtual);
+        if (instanceAtual) instanceAtual.hide();
+
+        setTimeout(() => {
+            const proximoModal = document.querySelector(`.modal-passo[data-indice="${novoIndice}"]`);
+            const idProximo = proximoModal.getAttribute('id');
+            const instanceProxima = FlowbiteInstances.getInstance('Modal', idProximo);
+            if (instanceProxima) instanceProxima.show();
+        }, 150);
+    }
+
     htmx.onLoad(function(content) {
         var sortables = content.querySelectorAll("#sortable-items");
         for (var i = 0; i < sortables.length; i++) {
-            var sortable = sortables[i];
-            new Sortable(sortable, {
+            new Sortable(sortables[i], {
                 animation: 150,
                 handle: 'li', 
                 ghostClass: 'bg-blue-50', 
                 onEnd: function (evt) {
                     htmx.trigger('#lista-atividades', 'end');
-                    
                     updateVisualOrder();
                 }
             });
@@ -153,5 +179,4 @@
         });
     }
 </script>
-
 {% endblock %}
