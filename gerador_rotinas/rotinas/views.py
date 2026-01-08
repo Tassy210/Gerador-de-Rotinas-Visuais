@@ -64,11 +64,7 @@ MODELOS_DE_ROTINA = {
 # --- FUNÇÃO HELPER (AUXILIAR) ---
 
 def criar_rotinas_padrao_completas(usuario):
-    """
-    Cria o conjunto completo de categorias e, se houver, 
-    as rotinas-modelo para um novo usuário.
-    """
-    
+
     nomes_padrao = [
         'Higiene Pessoal',
         'Alimentação',
@@ -104,22 +100,25 @@ def criar_rotinas_padrao_completas(usuario):
                 }
             )
             
-            if criada_rotina:
-                
+            if criada_rotina:   
                 for passo in dados_modelo['atividades']:
-                    Atividade.objects.create(
+                    Atividade.objects.get_or_create(
                         rotina=nova_rotina,
                         usuario=usuario,
                         titulo=passo['titulo'],
-                        ordem=passo['ordem'],
-                        pictograma_padrao=passo['path']
+                        defaults={
+                            'ordem': passo['ordem'],
+                            'pictograma_padrao': passo['path']
+                        }
                     )
 
 # --- VIEWS PRINCIPAIS ---
 
 @login_required
 def home(request, categoria_id=None):
-    if not Categoria.objects.filter(usuario=request.user).exists() and not request.session.get('setup_concluido', False):
+
+    tem_categorias = Categoria.objects.filter(usuario=request.user).exists()
+    if not tem_categorias and not request.session.get('setup_concluido', False):
         return redirect('setup_inicial')
 
     if request.method == 'POST':
@@ -163,7 +162,9 @@ def cadastro(request):
 @login_required 
 def criar_rotina(request):
     if request.method == 'POST':
-        form = RotinaForm(request.POST, request.FILES) 
+        form = RotinaForm(request.POST, request.FILES)
+        form.fields['categoria'].queryset = Categoria.objects.filter(usuario=request.user).order_by('nome')
+        
         if form.is_valid():
             nova_rotina = form.save(commit=False)
             nova_rotina.usuario = request.user 
@@ -171,6 +172,8 @@ def criar_rotina(request):
             return redirect('home')
     else:
         form = RotinaForm()
+        form.fields['categoria'].queryset = Categoria.objects.filter(usuario=request.user).order_by('nome')
+    
     return render(request, 'rotinas/criar_rotina.html', {'form': form})
     
 @login_required

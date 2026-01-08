@@ -18,7 +18,7 @@ class Categoria(models.Model):
 
     def __str__(self):
         if self.usuario:
-            return f"{self.nome} ({self.usuario.username})"
+            return f"{self.nome}  "
         return f"{self.nome} (Global)"
 
     @property 
@@ -55,19 +55,21 @@ class Rotina(models.Model):
     def __str__(self):
         return self.titulo
 
-    @property
-    def pictograma_url(self):
+@property
+@property
+def pictograma_url(self):
+  
+    if self.pictograma_upload and hasattr(self.pictograma_upload, 'url'):
+        return self.pictograma_upload.url
+    
+    if self.pictograma_padrao: 
+        return static(self.pictograma_padrao)
+    
+    if self.categoria:
 
-        if self.pictograma_upload and hasattr(self.pictograma_upload, 'url'):
-            return self.pictograma_upload.url
-        
-        if self.pictograma_padrao: 
-            return static(self.pictograma_padrao)
-        
-        return static("pictogramas_padrao/placeholder.png")
-
-    class Meta:
-        pass 
+        return self.categoria.categoria_pictograma_url 
+    
+    return static("pictogramas_padrao/placeholder.png")
 
 class Atividade(models.Model):
 
