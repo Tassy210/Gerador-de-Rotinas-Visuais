@@ -9,7 +9,7 @@
         
         <article class="bg-white rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-slate-100 flex items-center justify-center p-4">
-                <img src="{{ rotina.pictograma_url }}" alt="Pictograma da rotina {{ rotina.titulo }}" class="w-full max-w-md h-64 object-contain rounded-lg">
+                <img src="{% if rotina.pictograma_upload %}{{ rotina.pictograma_upload.url }}{% else %}{% static rotina.pictograma_padrao %}{% endif %}" class="w-full max-w-md h-64 object-contain rounded-lg">
             </div>
 
             <div class="p-6 sm:p-10 text-center">

@@ -59,6 +59,50 @@ MODELOS_DE_ROTINA = {
             {'titulo': 'Apagar a luz', 'ordem': 5, 'path': 'pictogramas_padrao/quarto/apagar_luz.png'}
         ]
     },
+
+    'rotina_domestica': {
+        'titulo_rotina': 'Ajudando em Casa (Modelo)',
+        'categoria_nome': 'Tarefas Domésticas',
+        'descricao_rotina': 'Pequenas tarefas para ajudar a família.',
+        'path_rotina': 'pictogramas_padrao/casa/faxina.png',
+        'atividades': [
+            {'titulo': 'Arrumar a cama', 'ordem': 1, 'path': 'pictogramas_padrao/quarto/fazer_a_cama.png'},
+            {'titulo': 'Varrer a casa', 'ordem': 2, 'path': 'pictogramas_padrao/casa/varrer.png'},
+            {'titulo': 'Recolher o lixo', 'ordem': 3, 'path': 'pictogramas_padrao/casa/lixo.png'},
+            {'titulo': 'Lavar a louça', 'ordem': 4, 'path': 'pictogramas_padrao/alimentacao/lavar_pratos.png'},
+            {'titulo': 'Regar as plantas', 'ordem': 5, 'path': 'pictogramas_padrao/casa/regar.png'}
+            
+        ]
+    },
+
+    'rotina_lazer': {
+        'titulo_rotina': 'Hora de Brincar (Modelo)',
+        'categoria_nome': 'Lazer',
+        'descricao_rotina': 'Momentos de diversão e relaxamento.',
+        'path_rotina': 'pictogramas_padrao/lazer/brinquedo.png',
+        'atividades': [
+            {'titulo': 'Escolher o brinquedo', 'ordem': 1, 'path': 'pictogramas_padrao/lazer/brinquedo.png'},
+            {'titulo': 'Brincar', 'ordem': 2, 'path': 'pictogramas_padrao/lazer/brincar.png'},
+            {'titulo': 'Dividir os brinquedos', 'ordem': 3, 'path': 'pictogramas_padrao/lazer/compartilhar.png'},
+            {'titulo': 'Guardar os brinquedos (Quando acabar)', 'ordem': 4, 'path': 'pictogramas_padrao/lazer/guardar.png'}, 
+        ]
+    },
+
+    'rotina_escola': {
+        'titulo_rotina': 'Indo para a Escola (Modelo)',
+        'categoria_nome': 'Escola/Estudos',
+        'descricao_rotina': 'Passos para organizar a ida à aula.',
+        'path_rotina': 'pictogramas_padrao/escola/escola.png',
+        'atividades': [
+            {'titulo': 'Arrumar a mochila', 'ordem': 1, 'path': 'pictogramas_padrao/escola/mochila.png'},
+            {'titulo': 'Colocar o uniforme', 'ordem': 2, 'path': 'pictogramas_padrao/vestuario/vestir_roupa.png'},
+            {'titulo': 'Pegar o lanche', 'ordem': 3, 'path': 'pictogramas_padrao/alimentacao/lanche.png'},
+            {'titulo': 'Entrar no transporte', 'ordem': 4, 'path': 'pictogramas_padrao/escola/onibus.png'}
+        ]
+    },
+
+
+
 }
 
 # --- FUNÇÃO HELPER (AUXILIAR) ---
@@ -89,13 +133,12 @@ def criar_rotinas_padrao_completas(usuario):
         
         if categoria_mae:
 
-            nova_rotina, criada_rotina = Rotina.objects.get_or_create(
+            nova_rotina, criada_rotina = Rotina.objects.update_or_create(
                 usuario=usuario,
                 titulo=dados_modelo['titulo_rotina'],
                 categoria=categoria_mae,
                 defaults={
                     'descricao': dados_modelo['descricao_rotina'],
-
                     'pictograma_padrao': dados_modelo.get('path_rotina', None) 
                 }
             )

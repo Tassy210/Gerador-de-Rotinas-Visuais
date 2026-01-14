@@ -55,20 +55,21 @@ class Rotina(models.Model):
     def __str__(self):
         return self.titulo
 
-@property
-@property
 def pictograma_url(self):
-  
-    if self.pictograma_upload and hasattr(self.pictograma_upload, 'url'):
-        return self.pictograma_upload.url
-    
-    if self.pictograma_padrao: 
-        return static(self.pictograma_padrao)
-    
-    if self.categoria:
+    # 1. Se tem arquivo físico que o usuário subiu, usa a URL de MEDIA
+    if self.pictograma_upload:
+        try:
+            return self.pictograma_upload.url
+        except:
+            pass
 
-        return self.categoria.categoria_pictograma_url 
-    
+    # 2. Se não tem upload, ele PRECISA usar o caminho do static que está no banco
+    if self.pictograma_padrao:
+        # Garante que o caminho não tenha barras extras e usa a pasta static
+        caminho = str(self.pictograma_padrao).strip()
+        return static(caminho)
+
+    # 3. Fallback se o banco estiver vazio
     return static("pictogramas_padrao/placeholder.png")
 
 class Atividade(models.Model):
